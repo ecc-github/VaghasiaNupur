@@ -1,157 +1,573 @@
 :root {
-    /* colors & dimensions */
-    --bg: #3D5650;
-    --gold: #D4AF37;
-    --path-length: 0;             /* override via JS */
-  
-    /* fonts */
-    --font-body: 'Poppins', sans-serif;
-    --font-heading: 'Playfair Display', serif;
-  
-    /* hero image */
-    --Mainpic: url('pic4.png');
-  }
-  
-  /* reset & full‑screen flex */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: var(--font-body);
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* --- SVG animation --- */
-  #hello-container {
-    position: absolute;
-    inset: 0;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
-  #hello-wrapper {
-    width: 30vw;
-    max-width: 200px;
-  }
-  .hello {
-    fill: none;
-    stroke: var(--gold);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-miterlimit: 10;
-    stroke-dasharray: var(--path-length);
-    stroke-dashoffset: var(--path-length);
-    animation: drawReverse 3s ease-in-out forwards;
-  }
-  @keyframes drawReverse {
-    0%   { stroke-dashoffset: var(--path-length); }
-    40%  { stroke-dashoffset: 0; }
-    60%  { stroke-dashoffset: 0; }
-    100% { stroke-dashoffset: var(--path-length); }
-  }
-  
-  /* --- Portfolio landing page --- */
-  #portfolio {
-    position: absolute;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    background: var(--bg);
-    color: white;
-    opacity: 0;
-    transition: opacity 0.8s ease-in-out;
-  }
-  #portfolio.show {
-    display: flex;
+  --bg: #3D5650;
+  --gold: #D4AF37;
+  --accent: #ffffff;
+  --path-length: 0;
+
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Work Sans', sans-serif;
+
+  --Mainpic: url('pic4.png');
+}
+
+
+
+/* reset & full-screen flex */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-body);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;   /* disable horizontal scrolling */
+}
+
+/* --- SVG animation --- */
+#hello-container {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+#hello-wrapper {
+  width: 30vw;
+  max-width: 200px;
+}
+.hello {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+  stroke-dasharray: var(--path-length);
+  stroke-dashoffset: var(--path-length);
+  animation: drawReverse 2s ease-in-out forwards;
+}
+@keyframes drawReverse {
+  0%   { stroke-dashoffset: var(--path-length); }
+  40%  { stroke-dashoffset: 0; }
+  60%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: var(--path-length); }
+}
+
+/* --- Portfolio landing page --- */
+#portfolio {
+  position: absolute;
+  inset: 0;
+  display: flex;            /* always flex so we can transition opacity */
+  flex-direction: column;
+  background: var(--bg);
+  color: white;
+  padding-top: 3.5rem;        /* push content below header */
+  overflow-x: hidden;       /* ensure no horizontal scroll */
+  opacity: 0;               /* start hidden */
+  pointer-events: none;     /* prevent interaction until shown */
+  transition: opacity 0.3s ease;
+}
+#portfolio.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- Compact, full-width header as a “card” --- */
+.portfolio-header {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  margin: 0 1rem;
+  padding: 0.75rem 2rem; /* more horizontal space */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  flex-wrap: nowrap;
+  gap: 1.5rem;
+}
+
+
+/* logo */
+.portfolio-header .logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+   padding-left: 0.5rem;
+}
+
+/* hamburger toggle (desktop hidden) */
+.portfolio-header .menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+}
+
+/* nav links */
+.portfolio-header nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10rem; /* desktop spacing */
+}
+
+
+.portfolio-header nav a {
+  margin: 0;
+  font-size: 1rem;
+  color: white;
+  text-decoration: none;
+  padding: 0.25rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.portfolio-header nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.portfolio-header nav a:hover {
+  color: var(--gold);
+}
+
+.portfolio-header nav a:hover::after {
+  transform: scaleX(1);
+}
+
+
+/* CTA button */
+.portfolio-header .cta {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  background: #5DAA4E;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+/* --- Hero section (now unused) --- */
+.hero {
+  display: none;
+}
+
+.portfolio-office {
+  position: relative;                          /* 🆕 Enables absolute positioning inside */
+  margin: 1rem;
+  margin-top: 3rem;
+  height: 60vh !important;                     /* maintains vertical height */
+  padding: 0 !important;
+  background-image: url('office1.jpg') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;     /* ✅ parallax */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  overflow: hidden !important;
+}
+
+
+
+/* --- Body text --- */
+.portfolio-body {
+  max-width: 90%;
+  margin: 0 auto 2rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+.portfolio-body h1 {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  margin-bottom: 0;
+  line-height: 1.2;
+  color: var(--gold);
+}
+.portfolio-body p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: white;
+}
+
+/* ―― Animate in children after #portfolio.show ―― */
+/* initial hidden + shifted */
+.portfolio-header,
+.portfolio-main,
+.portfolio-body {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.6s ease;
+}
+
+/* 1) Header appears immediately */
+#portfolio.show .portfolio-header {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+/* 2) Image div after 0.1s */
+#portfolio.show .portfolio-main {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+/* 3) Body text after 0.2s */
+#portfolio.show .portfolio-body {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+}
+
+.portfolio-office .cta-button {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 1rem 0; /* override margin auto for bottom alignment */
+}
+.cta-button {
+  display: inline-block;               /* 🆕 prevents line wrapping */
+  white-space: nowrap;                /* 🆕 forces one line */
+  background-color: #5DAA4E;
+  color: black;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.55rem 1.75rem;
+  border-radius: 12px;
+  margin: 2rem auto;
+  text-align: center;
+  max-width: max-content;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+
+.cta-button:hover {
+  background-color: #6BC158;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+
+.chat-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.bubble {
+  display: inline-block;
+  padding: 0.75rem 1.1rem;
+  border-radius: 1.2rem;
+  max-width: 75%;
+  font-size: 1rem;
+  line-height: 1.5;
+  word-break: break-word;
+
+  opacity: 0;
+  transform: translateY(12px);
+  animation: bubbleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes bubbleIn {
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
+}
+
+/* Slightly humanized delays */
+.chat-bubbles .bubble:nth-child(1) { animation-delay: 0.4s; }
+.chat-bubbles .bubble:nth-child(2) { animation-delay: 1.2s; }
+.chat-bubbles .bubble:nth-child(3) { animation-delay: 2.1s; }
+.chat-bubbles .bubble:nth-child(4) { animation-delay: 3.2s; }
+
+.bubble-left {
+  align-self: flex-start;
+  background: #e5e5ea;
+  color: #000;
+  border-top-left-radius: 0.2rem;
+  text-align: left;
+}
+
+.bubble-right {
+  align-self: flex-end;
+  background: #007aff;
+  color: #fff;
+  border-top-right-radius: 0.2rem;
+  text-align: left; /* keep left-aligned text for readability */
+}
+
+
+/* --- New image container below menu bar --- */
+.portfolio-main {
+  margin: 1rem;
+  margin-top: 1rem;
+  padding: 1rem 1rem 0 1rem !important; /* no bottom padding */
+  background: #fdf6e3 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  height: 40vh !important;
+  display: flex !important;
+  align-items: flex-end !important;     /* align to bottom */
+  justify-content: flex-start !important;  /* align to left */
+  line-height: 0 !important;            /* remove image gap */
+  overflow: hidden !important;
+}
+
+.portfolio-main .main-image {
+  display: block !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 8px !important;
+}
+
+/* Card grid fills the remaining space */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.5rem;
+  height: 100%;
+  width: 100%;
+  margin-left: 1rem;
+  padding-bottom: 1rem; /* ✅ Add margin under bottom cards */
+  line-height: normal;  /* ✅ Ensure inherited line-height doesn't affect children */
+}
+
+/* Individual cards */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Stronger soft shadow */
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-heading); /* Use your heading font */
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2c2c2c;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Subtle hover lift effect */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+
+/* --- Mobile (≤768px) --- */
+@media (max-width: 768px) {
   
-  /* header */
-  header {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    padding: 1.5rem 2.5rem;
+
+  
+  .portfolio-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    background: rgba(0,0,0,0.4);
-    z-index: 5;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    overflow: hidden;
+    max-height: 3.5rem;
+    transition: max-height 0.5s ease;
   }
-  .logo {
-    font-family: var(--font-heading);
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--gold);
+
+  /* Logo & toggle */
+  .portfolio-header .logo,
+  .portfolio-header .menu-toggle {
+    order: 0;
   }
-  nav a {
-    margin: 0 1rem;
-    font-size: 1.1rem;
-    color: white;
-    text-decoration: none;
-  }
-  .cta {
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    background: #5DAA4E;
+  .portfolio-header .menu-toggle {
+    display: block;
+    background: none;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    text-transform: capitalize;
+    font-size: 1.8rem;
+    color: #fff;
     cursor: pointer;
-  }
-  
-  /* --- Hero: image directly on top of text --- */
-  .hero {
     position: relative;
+    z-index: 1;
+  }
+
+  /* collapse nav & CTA by default */
+  .portfolio-header nav,
+  .portfolio-header .cta {
+    order: 1;
     width: 100%;
-    min-height: 100vh;
+    transform-origin: top center;
+    transform: scaleY(0);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* expand container when open */
+.portfolio-header.open {
+  max-height: 100%; /* or a more realistic height like 20rem */
+}
+  .portfolio-header.open nav,
+  .portfolio-header.open .cta {
+    pointer-events: auto;
+  }
+
+  /* OPEN: vertical list */
+  .portfolio-header.open nav {
+      gap: 1rem; /* tighter spacing for mobile */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background: var(--bg);
-    padding: 0;
+    width: 100%;
+    animation: bounceDown 0.5s ease-out forwards;
   }
-  
-  /* pseudo-element for the hero image */
-  .hero::before {
-    content: "";
+.portfolio-header.open nav a {
+  display: block;
+  width: 100%;
+  margin: 0;                      /* remove vertical margin */
+  padding: 0.25rem 0.75rem;       /* minimal vertical padding */
+  text-align: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  opacity: 1;
+  font-size: 1rem;
+  line-height: 1.2;               /* tighten line spacing */
+  box-sizing: border-box;
+}
+
+
+  /* OPEN: fade in CTA */
+  .portfolio-header.open .cta {
     display: block;
-    width: 50%;
-    max-width: 70%;
-    aspect-ratio: 16 / 9;
-    background: var(--Mainpic) center/contain no-repeat;
-    margin-top: 5rem;
-    margin-bottom: -4rem;
+    animation: fadeDown 0.3s ease-out forwards;
   }
-  
-  /* text block beneath the image */
-  .hero-text {
-    max-width: 70%;
-    margin: 2rem auto;
+
+  /* CLOSING: bounce-up nav & fade-up CTA in sync */
+  .portfolio-header.closing {
+    max-height: 3.5rem;
+    transition: max-height 0.5s ease-in-out;
+  }
+  .portfolio-header.closing nav {
+    animation: bounceUp 0.5s ease-in-out forwards;
+  }
+  .portfolio-header.closing .cta {
+    animation: fadeUp 0.5s ease-in-out forwards;
+  }
+
+  /* CTA styling */
+  .portfolio-header .cta {
+    order: 2;
+    margin: 0.75rem 0;
     text-align: center;
-    padding: 0 1rem;
   }
-  .hero-text h1 {
-    font-family: var(--font-heading);
-    font-size: 3rem;
-    margin-bottom: 0rem;
-    line-height: 1.2;
-    color: var(--gold);
+
+  /* Image section adjustments */
+.portfolio-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100vh;
+  padding-bottom: 2rem;
+}
+
+
+  .image-wrapper {
+    width: 90vw; /* Slightly wider for mobile */
+    max-height: 50vh; /* Increased to accommodate stacked images */
+    flex-direction: column; /* Stack images vertically on mobile */
+    box-shadow: none; /* Remove shadow for cleaner mobile look */
   }
-  .hero-text p {
-    font-size: 1.25rem;
-    line-height: 1.6;
-    color: white;
+
+  .main-image {
+    width: 90vw; /* Full width for mobile */
+    max-height: 24vh; /* Split height for each image */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Preserve aspect ratio */
   }
-  
+
+
+  /* Adjust portfolio-body to flow naturally below */
+  .portfolio-body {
+    max-width: 90%; /* Wider content area for mobile readability */
+    margin: 1rem auto; /* Reduced margin for mobile */
+    padding: 0 0.5rem;
+  }
+
+  .portfolio-body h1 {
+    font-size: 2rem; /* Smaller heading for mobile */
+  }
+
+  .portfolio-body p {
+    font-size: 1rem; /* Smaller paragraph text for mobile */
+  }
+}
+
+/* bounce-down on open */
+@keyframes bounceDown {
+  0%   { transform: scaleY(0);    opacity: 0; }
+  60%  { transform: scaleY(1.05); opacity: 1; }
+  80%  { transform: scaleY(0.98); }
+  100% { transform: scaleY(1);     opacity: 1; }
+}
+
+/* bounce-up on close */
+@keyframes bounceUp {
+  0%   { transform: scaleY(1);    opacity: 1; }
+  30%  { transform: scaleY(1.05); }
+  100% { transform: scaleY(0);    opacity: 0; }
+}
+
+/* fade-in CTA */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+
+/* fade-out CTA */
+@keyframes fadeUp {
+  from { opacity: 1; transform: translateY(0);      }
+  to   { opacity: 0; transform: translateY(-8px);   }
+}
+
+

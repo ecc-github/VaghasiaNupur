@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <!-- add just below your other <meta> tags -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Work+Sans:wght@600;700&display=swap" rel="stylesheet">
 
-  <title>Animated SVG Hello → Portfolio</title>
+  <title>Nupur Vaghasia</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Hello animation -->
-  <div id="hello-container">
+  <div id="hello-container" style="opacity:1; transition:opacity 0.8s ease-in-out;">
     <div id="hello-wrapper">
       <svg viewBox="0 0 110 54" xmlns="http://www.w3.org/2000/svg">
         <path class="hello"
@@ -24,30 +25,75 @@
 
   <!-- Portfolio landing page (hidden initially) -->
   <div id="portfolio">
-    <header>
-      <div class="logo">Therapy with Joy</div>
+    <!-- 1) Menu bar -->
+    <header class="portfolio-header">
+      <div class="logo">Nupur Vaghasia</div>
+
+      <!-- hamburger toggle -->
+      <button class="menu-toggle" aria-label="Toggle menu">
+        &#9776;
+      </button>
+
       <nav>
-        <a href="#">Meet the Team</a>
-        <a href="#">About</a>
+        <a href="#">About Me</a>
+        <a href="#">Experience</a>
         <a href="#">Services</a>
-        <a href="#">Contact Us</a>
+        <a href="#">Contact Me</a>
       </nav>
-      <button class="cta">get started</button>
+
+      <button class="cta">Book Free Consultation</button>
     </header>
 
-    <section class="hero">
-      <div class="hero-text">
-        <h1>Therapy doesn’t have to suck.</h1>
-        <p>
-          While we take our work with you very seriously, we are not the stoic, Freudian type.
-          Our therapists are real people who use proven, effective methods to provide a gentle,
-          safe, and (sometimes) fun approach to therapy that can lead to more healing,
-          fulfillment and JOY!
-        </p>
-      </div>
-    </section>
-  </div>
 
+<!-- 2a) Office image section -->
+<div class="portfolio-office">
+  <a href="https://www.peterschmittlmhc.com/nupur-vaghasia" target="_blank" class="cta-button in-office">
+    Book Free Consultation
+  </a>
+</div>
+
+
+
+<!-- 3) Body text -->
+<section class="portfolio-body">
+  <div class="chat-bubbles">
+    <div class="bubble bubble-left">
+      Therapy sounds scary...
+    </div>
+    <div class="bubble bubble-right">
+      Yeah, but it doesn’t have to be.
+    </div>
+    <div class="bubble bubble-left">
+      Wait — really?
+    </div>
+    <div class="bubble bubble-right">
+      For real. Think safe space, real talk, and tools that actually help.
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- 2) Main image (now its own div below the header) -->
+<!-- 2) Main image (now its own div below the header) -->
+<div class="portfolio-main">
+  <img src="pic3.png" alt="Therapy preview" class="main-image" />
+
+  <div class="card-grid">
+<div class="card">Feeling Overwhelmed?</div>
+<div class="card">Boundaries ≠ Guilt</div>
+<div class="card">Culturally Sensitive Care</div>
+<div class="card">Explore Your Inner World</div>
+<div class="card">Gentle, Trauma-Informed Support</div>
+<div class="card">Reclaim Space & Self</div>
+
+  </div>
+</div>
+
+
+
+  <!-- keep your script at the bottom so it fires after the DOM is ready -->
   <script src="script.js"></script>
 </body>
 </html>
