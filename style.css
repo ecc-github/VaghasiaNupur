@@ -10,6 +10,28 @@
   --Mainpic: url('Pic4.png');
 }
 
+/* Global link styles: disable color changes and remove underline */
+a, a:link, a:visited, a:hover, a:active {
+  color: inherit;          /* Keep the same text color */
+  text-decoration: none;   /* Remove underline */
+}
+
+/* Optionally, if you have specific CTA or nav links: */
+.portfolio-header nav a,
+.portfolio-header .cta,
+.cta-button {
+    transition: filter 0.3s ease,
+              transform 0.2s ease;
+  color: inherit;
+  text-decoration: none;
+}
+
+.portfolio-header nav a:visited,
+.portfolio-header .cta:visited,
+.cta-button:visited {
+  color: inherit;
+  text-decoration: none;
+}
 
 
 /* reset & full-screen flex */
@@ -175,6 +197,11 @@ html, body {
   cursor: pointer;
 }
 
+.portfolio-header .cta:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
 /* --- Hero section (now unused) --- */
 .hero {
   display: none;
@@ -253,10 +280,14 @@ html, body {
 
 .portfolio-office .cta-button {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 1rem 0; /* override margin auto for bottom alignment */
+  bottom: 1rem;          /* distance from the bottom edge */
+  left: 50%;             /* start at 50% of its container’s width */
+  transform: translate(-50%, 0); /* pull left by half its own width */
+  margin: 0;             /* clear out any auto/vertical margins */
+  transition: 
+    transform 0.2s ease, 
+    filter 0.3s ease, 
+    box-shadow 0.3s ease;
 }
 .cta-button {
   display: inline-block;               /* 🆕 prevents line wrapping */
@@ -273,13 +304,15 @@ html, body {
   text-align: center;
   max-width: max-content;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+  transition: filter 0.3s ease,
+              transform 0.2s ease,
+              box-shadow 0.3s ease;  cursor: pointer;
 }
 
 
-.cta-button:hover {
-  background-color: #6BC158;
+.portfolio-office .cta-button:hover {
+  transform: translate(-50%, -2px);
+  filter: brightness(1.1);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 

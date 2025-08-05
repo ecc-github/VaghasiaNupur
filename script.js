@@ -1,49 +1,58 @@
-// 1) Compute total path length for the stroke
-const path = document.querySelector('.hello');
-const length = path.getTotalLength();
-path.style.setProperty('--path-length', length);
+document.addEventListener('DOMContentLoaded', () => {
+  const path           = document.querySelector('.hello');
+  const helloContainer = document.getElementById('hello-container');
+  const portfolio      = document.getElementById('portfolio');
+  const playedFlag     = sessionStorage.getItem('helloPlayed');
 
-// 2) Grab your containers & schedule “show” early
-const helloContainer = document.getElementById('hello-container');
-const portfolio      = document.getElementById('portfolio');
-const drawDuration   = 2000;  // matches your 2s drawReverse
-const earlyKick      = 100;   // ms before end to start showing
-
-path.addEventListener('animationstart', () => {
-  setTimeout(() => {
+  // If we’ve already played, skip straight to showing the portfolio
+  if (playedFlag) {
+    if (helloContainer) helloContainer.remove();
     portfolio.classList.add('show');
-  }, drawDuration - earlyKick);
-});
+    return;
+  }
 
-// 3) After animation (draw + pause + reverse) finishes, fade out and finalize view swap
-path.addEventListener('animationend', () => {
-  // faster fade-out now 0.4s instead of 0.8s
-  helloContainer.style.transition = 'opacity 0.4s ease-in-out';
-  helloContainer.style.opacity = '0';
+  // Otherwise run your existing animation…
+  if (path) {
+    const length = path.getTotalLength();
+    path.style.setProperty('--path-length', length);
 
-  helloContainer.addEventListener('transitionend', () => {
-    helloContainer.remove();
-    portfolio.classList.add('show');
-  }, { once: true });
-});
+    path.addEventListener('animationstart', () => {
+      setTimeout(() => portfolio.classList.add('show'),
+                 2000 - 100 /* drawDuration - earlyKick */);
+    });
 
-// 4) Mobile hamburger toggle
-const header = document.querySelector('.portfolio-header');
-const btn    = header.querySelector('.menu-toggle');
+    path.addEventListener('animationend', () => {
+      // mark as played so clicking the logo won’t replay
+      sessionStorage.setItem('helloPlayed', 'true');
 
-btn.addEventListener('click', () => {
-  if (!header.classList.contains('open')) {
-    // opening
-    header.classList.add('open');
+      helloContainer.style.transition = 'opacity 0.4s ease-in-out';
+      helloContainer.style.opacity    = '0';
+      helloContainer.addEventListener('transitionend', () => {
+        helloContainer.remove();
+        portfolio.classList.add('show');
+      }, { once: true });
+    });
   } else {
-    // closing: kick off bounceUp
-    header.classList.add('closing');
-    // when animation on <nav> ends, clean up:
-    const nav = header.querySelector('nav');
-    function onDone() {
-      header.classList.remove('open', 'closing');
-      nav.removeEventListener('animationend', onDone);
-    }
-    nav.addEventListener('animationend', onDone);
+    if (helloContainer) helloContainer.remove();
+    portfolio.classList.add('show');
+  }
+  // 4) Mobile hamburger toggle (identical to your original)
+  const header = document.querySelector('.portfolio-header');
+  const btn    = header?.querySelector('.menu-toggle');
+  const nav    = header?.querySelector('nav');
+
+  if (btn && nav) {
+    btn.addEventListener('click', () => {
+      if (!header.classList.contains('open')) {
+        header.classList.add('open');
+      } else {
+        header.classList.add('closing');
+        function onDone() {
+          header.classList.remove('open', 'closing');
+          nav.removeEventListener('animationend', onDone);
+        }
+        nav.addEventListener('animationend', onDone);
+      }
+    });
   }
 });
