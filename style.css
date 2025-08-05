@@ -7,7 +7,7 @@
   --font-body: 'Inter', sans-serif;
   --font-heading: 'Work Sans', sans-serif;
 
-  --Mainpic: url('pic4.png');
+  --Mainpic: url('Pic4.png');
 }
 
 
@@ -63,13 +63,15 @@ html, body {
 
 /* --- Portfolio landing page --- */
 #portfolio {
-  position: absolute;
+  width: 80%;
+  min-width: 00px; /* adjust this value as needed */
+  position: center;
   inset: 0;
   display: flex;            /* always flex so we can transition opacity */
   flex-direction: column;
   background: var(--bg);
   color: white;
-  padding-top: 3.5rem;        /* push content below header */
+  padding-top: 1rem;        /* push content below header */
   overflow-x: hidden;       /* ensure no horizontal scroll */
   opacity: 0;               /* start hidden */
   pointer-events: none;     /* prevent interaction until shown */
@@ -82,12 +84,11 @@ html, body {
 
 /* --- Compact, full-width header as a “card” --- */
 .portfolio-header {
-  position: absolute;
   top: 1rem;
   left: 0;
   right: 0;
   margin: 0 1rem;
-  padding: 0.75rem 2rem; /* more horizontal space */
+  padding: 0.75rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -99,7 +100,6 @@ html, body {
   flex-wrap: nowrap;
   gap: 1.5rem;
 }
-
 
 /* logo */
 .portfolio-header .logo {
@@ -122,10 +122,12 @@ html, body {
 
 /* nav links */
 .portfolio-header nav {
+  flex: 1 1 auto;               /* fill available space */
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;/* distribute links evenly */
   align-items: center;
-  gap: 10rem; /* desktop spacing */
+  white-space: nowrap;          /* prevent wrapping */
+  margin: 0 1rem;               /* optional side padding */
 }
 
 
@@ -179,16 +181,18 @@ html, body {
 }
 
 .portfolio-office {
-  position: relative;                          /* 🆕 Enables absolute positioning inside */
-  margin: 1rem;
-  margin-top: 3rem;
-  height: 60vh !important;                     /* maintains vertical height */
+  position: relative;                          /* container for centering */
+  margin: 1rem 1rem 0;                         /* top/bottom/right/left */
+  height: 50vh !important;                     /* maintains vertical height */
   padding: 0 !important;
-  background-image: url('office1.jpg') !important;
+  background-image: url('Office1.jpg') !important;
   background-size: cover !important;
-  background-position: center center !important;
+  background-position: center center !important;  /* always center image */
   background-repeat: no-repeat !important;
-  background-attachment: fixed !important;     /* ✅ parallax */
+  background-attachment: scroll !important;        /* keep bg inside container */
+  display: flex !important;                        /* enable flex centering */
+  align-items: center !important;                  /* vertical center */
+  justify-content: center !important;              /* horizontal center */
   border-radius: 12px !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
   overflow: hidden !important;
@@ -279,7 +283,6 @@ html, body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 
-
 .chat-bubbles {
   display: flex;
   flex-direction: column;
@@ -309,11 +312,11 @@ html, body {
   }
 }
 
-/* Slightly humanized delays */
-.chat-bubbles .bubble:nth-child(1) { animation-delay: 0.4s; }
-.chat-bubbles .bubble:nth-child(2) { animation-delay: 1.2s; }
-.chat-bubbles .bubble:nth-child(3) { animation-delay: 2.1s; }
-.chat-bubbles .bubble:nth-child(4) { animation-delay: 3.2s; }
+/* One-at-a-time delays using nth-child */
+.chat-bubbles .bubble:nth-child(1) { animation-delay: 2s;   }
+.chat-bubbles .bubble:nth-child(2) { animation-delay: 3s; }
+.chat-bubbles .bubble:nth-child(3) { animation-delay: 3.5s; }
+.chat-bubbles .bubble:nth-child(4) { animation-delay: 4.8s; }
 
 .bubble-left {
   align-self: flex-start;
@@ -328,8 +331,9 @@ html, body {
   background: #007aff;
   color: #fff;
   border-top-right-radius: 0.2rem;
-  text-align: left; /* keep left-aligned text for readability */
+  text-align: left;
 }
+
 
 
 /* --- New image container below menu bar --- */
@@ -394,14 +398,26 @@ html, body {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
-
-
 /* --- Mobile (≤768px) --- */
 @media (max-width: 768px) {
-  
 
-  
+
+  html, body {
+    justify-content: flex-start; 
+  }
+
+  #portfolio {
+    width: 100%;
+    position: center;
+    padding-top: 4.5rem !important;
+  }
+
   .portfolio-header {
+        position: fixed;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    z-index: 999;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -414,6 +430,8 @@ html, body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     overflow: hidden;
     max-height: 3.5rem;
+    overflow: hidden;
+    
     transition: max-height 0.5s ease;
   }
 
@@ -444,34 +462,49 @@ html, body {
     pointer-events: none;
   }
 
-  /* expand container when open */
-.portfolio-header.open {
-  max-height: 100%; /* or a more realistic height like 20rem */
-}
+  /* full-screen overlay when open */
+  .portfolio-header.open {
+    position: fixed;
+    
+    top: 0rem;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.9);
+    overflow-y: auto;
+    z-index: 999;
+  }
   .portfolio-header.open nav,
   .portfolio-header.open .cta {
     pointer-events: auto;
   }
 
-  /* OPEN: vertical list */
+  /* OPEN: vertical full-screen menu */
   .portfolio-header.open nav {
-      gap: 1rem; /* tighter spacing for mobile */
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
     width: 100%;
+    height: 100%;
+    transform: none;
+    opacity: 1;
     animation: bounceDown 0.5s ease-out forwards;
+    
   }
 .portfolio-header.open nav a {
-  display: block;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  margin: 0;                      /* remove vertical margin */
-  padding: 0.25rem 0.75rem;       /* minimal vertical padding */
-  text-align: center;
+  margin: 0;
   background: rgba(255,255,255,0.1);
   border-radius: 6px;
-  opacity: 1;
-  font-size: 1rem;
-  line-height: 1.2;               /* tighten line spacing */
+  font-size: 1.25rem;
   box-sizing: border-box;
 }
 
@@ -482,7 +515,7 @@ html, body {
     animation: fadeDown 0.3s ease-out forwards;
   }
 
-  /* CLOSING: bounce-up nav & fade-up CTA in sync */
+  /* CLOSING: restore compact header */
   .portfolio-header.closing {
     max-height: 3.5rem;
     transition: max-height 0.5s ease-in-out;
@@ -502,14 +535,16 @@ html, body {
   }
 
   /* Image section adjustments */
-.portfolio-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100vh;
-  padding-bottom: 2rem;
+  .portfolio-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100vh;
+    padding-bottom: 2rem;
+  }
 }
+
 
 
   .image-wrapper {
@@ -541,7 +576,6 @@ html, body {
   .portfolio-body p {
     font-size: 1rem; /* Smaller paragraph text for mobile */
   }
-}
 
 /* bounce-down on open */
 @keyframes bounceDown {
