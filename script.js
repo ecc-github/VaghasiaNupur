@@ -1,61 +1,70 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const header = document.querySelector('.portfolio-header');
-  const btn    = header?.querySelector('.menu-toggle');
-  const nav    = header?.querySelector('nav');
+  const burger  = document.getElementById('burger') || document.querySelector('.menu-toggle');
+  const overlay = document.getElementById('mobile-overlay');
+  const sheet   = document.getElementById('overlay-sheet');
+  const bg      = document.getElementById('overlay-bg');
+  const header  = document.querySelector('.portfolio-header') || document.querySelector('header .portfolio-header') || document.querySelector('header');
 
-  // 0) Bind hamburger toggle immediately
-  if (btn && nav) {
-    btn.addEventListener('click', () => {
-      if (!header.classList.contains('open')) {
-        header.classList.add('open');
-      } else {
-        header.classList.add('closing');
-        function onDone() {
-          header.classList.remove('open', 'closing');
-          nav.removeEventListener('animationend', onDone);
-        }
-        nav.addEventListener('animationend', onDone);
-      }
-    });
+  let isOpen = false;
+
+  function positionSheet() {
+    if (!header || !sheet) return;
+    const h = header.getBoundingClientRect().height;
+    sheet.style.top = `${h}px`;            // sheet starts right under header
+    sheet.style.maxHeight = `calc(100dvh - ${h}px)`; // scrollable if long
+    sheet.style.overflowY = 'auto';
   }
 
-  // 1) Handle hello animation once
-  const path           = document.querySelector('.hello');
-  const helloContainer = document.getElementById('hello-container');
-  const portfolio      = document.getElementById('portfolio');
-  const playedFlag     = sessionStorage.getItem('helloPlayed');
-
-  if (playedFlag) {
-    if (helloContainer) helloContainer.remove();
-    portfolio.classList.add('show');
-    // no return here anymore — toggle is already bound
+  function openOverlay() {
+    if (isOpen) return;
+    isOpen = true;
+    positionSheet();
+    overlay.classList.remove('hidden');
+    // animate in
+    requestAnimationFrame(() => {
+      bg.classList.remove('opacity-0');
+      bg.classList.add('opacity-100');
+      sheet.classList.remove('opacity-0', 'translate-y-[-8px]');
+      sheet.classList.add('opacity-100', 'translate-y-0');
+    });
+    // lock background scroll
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    burger?.setAttribute('aria-expanded', 'true');
   }
 
-  // 2) If not yet played, run the SVG draw
-  if (!playedFlag && path) {
-    const length = path.getTotalLength();
-    path.style.setProperty('--path-length', length);
-
-    path.addEventListener('animationstart', () => {
-      setTimeout(
-        () => portfolio.classList.add('show'),
-        2000 - 100
-      );
-    });
-
-    path.addEventListener('animationend', () => {
-      sessionStorage.setItem('helloPlayed', 'true');
-      helloContainer.style.transition = 'opacity 0.4s ease-in-out';
-      helloContainer.style.opacity    = '0';
-      helloContainer.addEventListener('transitionend', () => {
-        helloContainer.remove();
-        portfolio.classList.add('show');
-      }, { once: true });
-    });
-
-  } else if (!path) {
-    // no hello SVG → just show
-    if (helloContainer) helloContainer.remove();
-    portfolio.classList.add('show');
+  function closeOverlay() {
+    if (!isOpen) return;
+    isOpen = false;
+    // animate out
+    bg.classList.remove('opacity-100');
+    bg.classList.add('opacity-0');
+    sheet.classList.remove('opacity-100', 'translate-y-0');
+    sheet.classList.add('opacity-0', 'translate-y-[-8px]');
+    // after animations, hide
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+    }, 220); // slightly > backdrop duration
+    // unlock scroll
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    burger?.setAttribute('aria-expanded', 'false');
   }
+
+  function toggleOverlay() {
+    isOpen ? closeOverlay() : openOverlay();
+  }
+
+  // Events
+  burger?.addEventListener('click', toggleOverlay);
+  bg?.addEventListener('click', closeOverlay);               // tap backdrop to close
+  overlay?.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') closeOverlay();            // close on link tap
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeOverlay();
+  });
+  window.addEventListener('resize', () => {
+    if (isOpen) positionSheet();
+  });
 });
