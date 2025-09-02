@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
@@ -35,6 +37,25 @@
       }
     }
   </script>
+<style>
+  /* Mobile overlay animation (Tailwind-independent) */
+  #overlay-bg{
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  #overlay-sheet{
+    transform-origin: top;
+    transform: scaleY(0);
+    opacity: 0;
+    transition: transform .30s ease, opacity .30s ease;
+  }
+  /* When open */
+  #mobile-overlay.is-open #overlay-bg{ opacity: 1; }
+  #mobile-overlay.is-open #overlay-sheet{
+    transform: scaleY(1);
+    opacity: 1;
+  }
+</style>
 
   <!-- Global styles (consolidated) -->
   <style>
@@ -138,28 +159,93 @@
     </div>
   </div>
 </header>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const burger   = document.getElementById('burger');
+  const overlay  = document.getElementById('mobile-overlay');
+  const sheet    = document.getElementById('overlay-sheet');
+  const bg       = document.getElementById('overlay-bg');
+  const header   = document.querySelector('.portfolio-header');
 
-<!-- Mobile overlay menu -->
+  // keep overlay sized under the header
+  function setHeaderVar(){
+    if (!header) return;
+    const h = Math.round(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+
+  function lockScroll(){ document.body.style.overflow = 'hidden'; }
+  function unlockScroll(){ document.body.style.overflow = ''; }
+
+  function openOverlay(){
+    setHeaderVar();
+    overlay.classList.remove('hidden');   // was display:none
+    overlay.classList.add('is-open');     // triggers your CSS animation
+    burger?.setAttribute('aria-expanded','true');
+    lockScroll();
+  }
+
+  function closeOverlay(){
+    overlay.classList.remove('is-open');
+    // wait for CSS transition to finish before hiding
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+    burger?.setAttribute('aria-expanded','false');
+    unlockScroll();
+  }
+
+  burger?.addEventListener('click', () => {
+    overlay.classList.contains('is-open') ? closeOverlay() : openOverlay();
+  });
+
+  // close when tapping the dim background
+  bg?.addEventListener('click', closeOverlay);
+
+  // close after choosing a link in the sheet
+  sheet?.addEventListener('click', (e) => {
+    if (e.target.matches('a[href^="#"]')) closeOverlay();
+  });
+
+  // maintain correct top offset while open
+  window.addEventListener('resize', () => {
+    if (overlay.classList.contains('is-open')) setHeaderVar();
+  }, { passive:true });
+  window.addEventListener('scroll', () => {
+    if (overlay.classList.contains('is-open')) setHeaderVar();
+  }, { passive:true });
+});
+</script>
+
+<!-- Mobile overlay menu (fix: match old logic + safelist dynamic classes) -->
 <div id="mobile-overlay" class="fixed inset-0 z-40 hidden md:hidden">
+  <!-- Safelist for Tailwind Play CDN so JS-toggled classes exist -->
+  <div class="hidden">
+    <span class="scale-y-100 opacity-100"></span>
+  </div>
+
+  <!-- Dim background -->
   <div id="overlay-bg" class="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-200"></div>
 
   <div class="absolute inset-0 pointer-events-none">
     <div class="mx-3 sm:mx-4 md:mx-auto md:w-[88%] lg:w-[80%] pointer-events-auto">
-      <nav id="overlay-sheet"
-           class="origin-top scale-y-0 opacity-0 transition-[transform,opacity] duration-300
-                  bg-[#2d413c] rounded-b-[2.5rem]"
-           style="
-             --join-offset: 12px;
-             margin-top: calc(var(--header-h) - var(--join-offset));
-             height: calc(98dvh - var(--header-h) + var(--join-offset));
-           ">
+      <nav
+        id="overlay-sheet"
+        class="origin-top scale-y-0 opacity-0 transition-[transform,opacity] duration-300 bg-[#2d413c] rounded-b-[2.5rem] will-change-transform will-change-opacity"
+        style="
+          --join-offset: 12px;
+          margin-top: calc(var(--header-h, 56px) - var(--join-offset));
+          height: calc(98dvh - var(--header-h, 56px) + var(--join-offset));
+        "
+        role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title"
+      >
         <div class="p-6 h-full overflow-y-auto flex flex-col items-center justify-center gap-6">
-          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#services" data-scroll>Services</a>
-          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#about" data-scroll>About Me</a>
-          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#approach" data-scroll>About You</a>
-          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#contact" data-scroll>Contact</a>
+          <h2 id="mobile-menu-title" class="sr-only">Site Menu</h2>
 
-          <a href="#booking" data-scroll
+          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#services">Services</a>
+          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#about">About Me</a>
+          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#approach">About You</a>
+          <a class="w-full flex items-center justify-center text-base bg-white/10 rounded-md px-4 py-3 hover:bg-white/15 transition" href="#contact">Contact</a>
+
+          <a href="#booking"
              class="mt-1 inline-flex items-center justify-center font-heading text-black bg-[#fdf6e3] px-5 py-3 rounded-full shadow-soft hover:brightness-105 hover:-translate-y-0.5 transition whitespace-nowrap min-w-[200px] self-center">
             BOOK A FREE CONSULTATION
           </a>
@@ -168,6 +254,7 @@
     </div>
   </div>
 </div>
+
 
 <main id="top">
   <!-- HERO -->

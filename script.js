@@ -1,70 +1,53 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const burger  = document.getElementById('burger') || document.querySelector('.menu-toggle');
-  const overlay = document.getElementById('mobile-overlay');
-  const sheet   = document.getElementById('overlay-sheet');
-  const bg      = document.getElementById('overlay-bg');
-  const header  = document.querySelector('.portfolio-header') || document.querySelector('header .portfolio-header') || document.querySelector('header');
+  const burger   = document.getElementById('burger');
+  const overlay  = document.getElementById('mobile-overlay');
+  const sheet    = document.getElementById('overlay-sheet');
+  const bg       = document.getElementById('overlay-bg');
+  const header   = document.querySelector('.portfolio-header');
 
-  let isOpen = false;
-
-  function positionSheet() {
-    if (!header || !sheet) return;
-    const h = header.getBoundingClientRect().height;
-    sheet.style.top = `${h}px`;            // sheet starts right under header
-    sheet.style.maxHeight = `calc(100dvh - ${h}px)`; // scrollable if long
-    sheet.style.overflowY = 'auto';
+  // keep overlay sized under the header
+  function setHeaderVar(){
+    if (!header) return;
+    const h = Math.round(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--header-h', h + 'px');
   }
 
-  function openOverlay() {
-    if (isOpen) return;
-    isOpen = true;
-    positionSheet();
-    overlay.classList.remove('hidden');
-    // animate in
-    requestAnimationFrame(() => {
-      bg.classList.remove('opacity-0');
-      bg.classList.add('opacity-100');
-      sheet.classList.remove('opacity-0', 'translate-y-[-8px]');
-      sheet.classList.add('opacity-100', 'translate-y-0');
-    });
-    // lock background scroll
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
-    burger?.setAttribute('aria-expanded', 'true');
+  function lockScroll(){ document.body.style.overflow = 'hidden'; }
+  function unlockScroll(){ document.body.style.overflow = ''; }
+
+  function openOverlay(){
+    setHeaderVar();
+    overlay.classList.remove('hidden');   // was display:none
+    overlay.classList.add('is-open');     // triggers your CSS animation
+    burger?.setAttribute('aria-expanded','true');
+    lockScroll();
   }
 
-  function closeOverlay() {
-    if (!isOpen) return;
-    isOpen = false;
-    // animate out
-    bg.classList.remove('opacity-100');
-    bg.classList.add('opacity-0');
-    sheet.classList.remove('opacity-100', 'translate-y-0');
-    sheet.classList.add('opacity-0', 'translate-y-[-8px]');
-    // after animations, hide
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-    }, 220); // slightly > backdrop duration
-    // unlock scroll
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    burger?.setAttribute('aria-expanded', 'false');
+  function closeOverlay(){
+    overlay.classList.remove('is-open');
+    // wait for CSS transition to finish before hiding
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+    burger?.setAttribute('aria-expanded','false');
+    unlockScroll();
   }
 
-  function toggleOverlay() {
-    isOpen ? closeOverlay() : openOverlay();
-  }
-
-  // Events
-  burger?.addEventListener('click', toggleOverlay);
-  bg?.addEventListener('click', closeOverlay);               // tap backdrop to close
-  overlay?.addEventListener('click', (e) => {
-    if (e.target.tagName === 'A') closeOverlay();            // close on link tap
+  burger?.addEventListener('click', () => {
+    overlay.classList.contains('is-open') ? closeOverlay() : openOverlay();
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeOverlay();
+
+  // close when tapping the dim background
+  bg?.addEventListener('click', closeOverlay);
+
+  // close after choosing a link in the sheet
+  sheet?.addEventListener('click', (e) => {
+    if (e.target.matches('a[href^="#"]')) closeOverlay();
   });
+
+  // maintain correct top offset while open
   window.addEventListener('resize', () => {
-    if (isOpen) positionSheet();
-  });
+    if (overlay.classList.contains('is-open')) setHeaderVar();
+  }, { passive:true });
+  window.addEventListener('scroll', () => {
+    if (overlay.classList.contains('is-open')) setHeaderVar();
+  }, { passive:true });
 });
