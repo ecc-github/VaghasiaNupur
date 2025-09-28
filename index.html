@@ -159,61 +159,6 @@
     </div>
   </div>
 </header>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const burger   = document.getElementById('burger');
-  const overlay  = document.getElementById('mobile-overlay');
-  const sheet    = document.getElementById('overlay-sheet');
-  const bg       = document.getElementById('overlay-bg');
-  const header   = document.querySelector('.portfolio-header');
-
-  // keep overlay sized under the header
-  function setHeaderVar(){
-    if (!header) return;
-    const h = Math.round(header.getBoundingClientRect().height);
-    document.documentElement.style.setProperty('--header-h', h + 'px');
-  }
-
-  function lockScroll(){ document.body.style.overflow = 'hidden'; }
-  function unlockScroll(){ document.body.style.overflow = ''; }
-
-  function openOverlay(){
-    setHeaderVar();
-    overlay.classList.remove('hidden');   // was display:none
-    overlay.classList.add('is-open');     // triggers your CSS animation
-    burger?.setAttribute('aria-expanded','true');
-    lockScroll();
-  }
-
-  function closeOverlay(){
-    overlay.classList.remove('is-open');
-    // wait for CSS transition to finish before hiding
-    setTimeout(() => overlay.classList.add('hidden'), 300);
-    burger?.setAttribute('aria-expanded','false');
-    unlockScroll();
-  }
-
-  burger?.addEventListener('click', () => {
-    overlay.classList.contains('is-open') ? closeOverlay() : openOverlay();
-  });
-
-  // close when tapping the dim background
-  bg?.addEventListener('click', closeOverlay);
-
-  // close after choosing a link in the sheet
-  sheet?.addEventListener('click', (e) => {
-    if (e.target.matches('a[href^="#"]')) closeOverlay();
-  });
-
-  // maintain correct top offset while open
-  window.addEventListener('resize', () => {
-    if (overlay.classList.contains('is-open')) setHeaderVar();
-  }, { passive:true });
-  window.addEventListener('scroll', () => {
-    if (overlay.classList.contains('is-open')) setHeaderVar();
-  }, { passive:true });
-});
-</script>
 
 <!-- Mobile overlay menu (fix: match old logic + safelist dynamic classes) -->
 <div id="mobile-overlay" class="fixed inset-0 z-40 hidden md:hidden">
@@ -264,22 +209,25 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="absolute inset-0 bg-center bg-cover" style="background-image:url('IMG_6469.jpeg')"></div>
       <div class="absolute inset-0 bg-black/30"></div>
 
-      <!-- Content -->
-      <div class="relative z-10 section-fill flex flex-col items-center justify-center px-4 text-center">
-        <h1 id="hero-title" class="font-heading font-bold text-4xl sm:text-5xl md:text-6xl leading-tight max-w-4xl text-white"
-            style="font-family: 'Playfair Display', serif;">
-          Therapy that meets you where you are
-        </h1>
-        <p class="mt-4 max-w-2xl text-base sm:text-lg text-white/90">
-          Welcome to your safe space, where warmth and tenderness are at the root of everything I do.
-          Whether you’re exploring new ways to nurture your mental health or continuing the work, I’m here to walk with you.
-        </p>
-        <a href="#booking" data-scroll
-           class="mt-8 inline-block bg-[#fdf6e3] text-black font-medium px-8 py-3 rounded-full shadow-soft hover:brightness-105 hover:-translate-y-0.5 transition whitespace-nowrap">
-          BOOK A FREE CONSULTATION
-        </a>
-      </div>
-    </div>
+<!-- Content (consistent dark panel) -->
+<div class="relative z-10 section-fill flex flex-col items-center justify-center px-4 text-center">
+  <div class="max-w-3xl rounded-2xl p-6 sm:p-10 shadow-soft bg-black/50  text-white">
+    <h1 id="hero-title"
+        class="font-heading font-bold text-4xl sm:text-5xl md:text-6xl leading-tight mb-4"
+        style="font-family: 'Playfair Display', serif;">
+      Therapy that meets you where you are
+    </h1>
+    <p class="text-base sm:text-lg leading-relaxed text-white/95">
+      Welcome to your safe space, where warmth and tenderness are at the root of everything I do.
+      Whether you’re exploring new ways to nurture your mental health or continuing the work, I’m here to walk with you.
+    </p>
+    <a href="#booking" data-scroll
+       class="mt-8 inline-block bg-[#fdf6e3] text-black font-medium px-8 py-3 rounded-full shadow-soft hover:brightness-105 hover:-translate-y-0.5 transition whitespace-nowrap">
+      BOOK A FREE CONSULTATION
+    </a>
+  </div>
+</div>
+
   </section>
 
   <!-- SERVICES / WHAT I OFFER -->
@@ -358,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </section>
 
   <!-- ABOUT ME + ABOUT MY WORK -->
-  <section id="about" class="bg-[#d4b07a] pt-4 sm:pt-16 lg:pt-20 pb-0">
+<section id="about" class="bg-[#d4b07a] pt-2 sm:pt-8 lg:pt-0 pb-0">
     <div class="w-full max-w-[1200px] mx-auto px-3 sm:px-6 lg:px-10">
       <!-- Image + Quote Row -->
       <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-10 mb-6 sm:mb-0">
@@ -371,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Quote -->
         <div class="flex-1 bg-white rounded-2xl shadow-soft p-5 sm:p-8 lg:p-10 text-[#0d3b34] flex items-center justify-center">
           <p class="text-base sm:text-xl italic font-medium leading-relaxed text-center sm:text-left max-w-prose">
-            As a trauma-informed South Asian therapist, I offer a warm, grounding space where you
+            As a trauma-informed therapist, I offer a warm, grounding space where you
             don’t have to perform or be “put together”. I bring gentle structure, follow your pace,
             and help you explore emotional patterns and protective strategies, all while creating
             space for the parts of you that have long gone unheard, unseen, or unspoken.
