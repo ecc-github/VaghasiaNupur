@@ -40,10 +40,14 @@
     }
   </script>
 <style>
-  /* Mobile overlay animation (Tailwind-independent) */
+  /* Overlay container doesn't eat clicks when closed */
+  #mobile-overlay { pointer-events: none; }
+  #mobile-overlay.is-open { pointer-events: auto; }
+
+  /* You already have these — they drive the animation both ways */
   #overlay-bg{
     opacity: 0;
-    transition: opacity .25s ease;
+    transition: opacity .30s ease; /* match sheet timing */
   }
   #overlay-sheet{
     transform-origin: top;
@@ -51,13 +55,13 @@
     opacity: 0;
     transition: transform .30s ease, opacity .30s ease;
   }
-  /* When open */
   #mobile-overlay.is-open #overlay-bg{ opacity: 1; }
   #mobile-overlay.is-open #overlay-sheet{
     transform: scaleY(1);
     opacity: 1;
   }
 </style>
+
 
   <!-- Global styles (consolidated) -->
   <style>
@@ -164,6 +168,61 @@
     </div>
   </div>
 </header>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const burger   = document.getElementById('burger');
+  const overlay  = document.getElementById('mobile-overlay');
+  const sheet    = document.getElementById('overlay-sheet');
+  const bg       = document.getElementById('overlay-bg');
+  const header   = document.querySelector('.portfolio-header');
+
+  // keep overlay sized under the header
+  function setHeaderVar(){
+    if (!header) return;
+    const h = Math.round(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+
+  function lockScroll(){ document.body.style.overflow = 'hidden'; }
+  function unlockScroll(){ document.body.style.overflow = ''; }
+
+  function openOverlay(){
+    setHeaderVar();
+    overlay.classList.remove('hidden');   // was display:none
+    overlay.classList.add('is-open');     // triggers your CSS animation
+    burger?.setAttribute('aria-expanded','true');
+    lockScroll();
+  }
+
+  function closeOverlay(){
+    overlay.classList.remove('is-open');
+    // wait for CSS transition to finish before hiding
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+    burger?.setAttribute('aria-expanded','false');
+    unlockScroll();
+  }
+
+  burger?.addEventListener('click', () => {
+    overlay.classList.contains('is-open') ? closeOverlay() : openOverlay();
+  });
+
+  // close when tapping the dim background
+  bg?.addEventListener('click', closeOverlay);
+
+  // close after choosing a link in the sheet
+  sheet?.addEventListener('click', (e) => {
+    if (e.target.matches('a[href^="#"]')) closeOverlay();
+  });
+
+  // maintain correct top offset while open
+  window.addEventListener('resize', () => {
+    if (overlay.classList.contains('is-open')) setHeaderVar();
+  }, { passive:true });
+  window.addEventListener('scroll', () => {
+    if (overlay.classList.contains('is-open')) setHeaderVar();
+  }, { passive:true });
+});
+</script>
 
 <!-- Mobile overlay menu (fix: match old logic + safelist dynamic classes) -->
 <div id="mobile-overlay" class="fixed inset-0 z-40 hidden md:hidden">
@@ -177,16 +236,13 @@
 
   <div class="absolute inset-0 pointer-events-none">
     <div class="mx-3 sm:mx-4 md:mx-auto md:w-[88%] lg:w-[80%] pointer-events-auto">
-      <nav
-        id="overlay-sheet"
-        class="origin-top scale-y-0 opacity-0 transition-[transform,opacity] duration-300 bg-[#2d413c] rounded-b-[2.5rem] will-change-transform will-change-opacity"
-        style="
-          --join-offset: 12px;
-          margin-top: calc(var(--header-h, 56px) - var(--join-offset));
-          height: calc(98dvh - var(--header-h, 56px) + var(--join-offset));
-        "
-        role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title"
-      >
+<nav
+  id="overlay-sheet"
+  class="origin-top transition-[transform,opacity] duration-300 bg-[#2d413c] rounded-b-[2.5rem] will-change-transform will-change-opacity"
+  style="--join-offset: 12px; margin-top: calc(var(--header-h,56px) - var(--join-offset));
+         height: calc(98dvh - var(--header-h,56px) + var(--join-offset));"
+  role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
+
         <div class="p-6 h-full overflow-y-auto flex flex-col items-center justify-center gap-6">
           <h2 id="mobile-menu-title" class="sr-only">Site Menu</h2>
 
@@ -232,7 +288,6 @@
     </a>
   </div>
 </div>
-
   </section>
 
   <!-- SERVICES / WHAT I OFFER -->
@@ -311,7 +366,7 @@
   </section>
 
   <!-- ABOUT ME + ABOUT MY WORK -->
-<section id="about" class="bg-[#d4b07a] pt-2 sm:pt-8 lg:pt-0 pb-0">
+  <section id="about" class="bg-[#d4b07a] pt-4 sm:pt-16 lg:pt-0 pb-0">
     <div class="w-full max-w-[1200px] mx-auto px-3 sm:px-6 lg:px-10">
       <!-- Image + Quote Row -->
       <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-10 mb-6 sm:mb-0">
