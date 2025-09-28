@@ -5,8 +5,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nupur Vaghasia</title>
-  <meta name="theme-color" content="#3D5650" />
+<title>Nupur Vaghasia</title>
+<link rel="icon" href="Logo.png" type="image/png">
+<meta name="theme-color" content="#3D5650" />
+
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
@@ -130,10 +132,13 @@
              rounded-3xl sm:rounded-[2rem] md:rounded-[2.5rem] px-3 sm:px-4 md:px-6 py-2.5
              bg-[#2d413c] md:bg-[rgba(45,65,60,0.85)]"
     >
-      <!-- Logo -->
-      <a href="#top" class="font-sans font-bold text-lg sm:text-xl md:text-2xl text-white pl-1" data-scroll>
-        Nupur Vaghasia
-      </a>
+<!-- Logo + Brand -->
+<a href="#top" class="flex items-center gap-2 font-sans font-bold text-lg sm:text-xl md:text-2xl text-white pl-1" data-scroll>
+  <img src="Logo.png" alt="Logo" class="h-8 w-auto sm:h-9 md:h-10">
+  <span>Nupur Vaghasia</span>
+</a>
+
+
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex flex-1 justify-evenly items-center whitespace-nowrap mx-2">
@@ -485,15 +490,32 @@
       <p class="max-w-2xl mx-auto text-[#0d3b34]/90 text-base sm:text-lg mb-10">
         Choose a time that works best for you. Use the calendar below to book your consultation directly.
       </p>
-      <div class="w-full">
-        <iframe
-          src="https://calendar.app.google/cu3zQQ6BwicDoGA48"
-          class="w-full h-[550px] sm:h-[650px] lg:h-[750px] rounded-xl shadow-soft"
-          style="background:#fff; border:0;"
-          frameborder="0"
-          allowfullscreen>
-        </iframe>
-      </div>
+<div class="w-full relative">
+  <!-- Primary embed (will work where iframing is allowed) -->
+  <iframe
+    id="booking-iframe"
+    src="https://calendar.app.google/cu3zQQ6BwicDoGA48"
+    title="Book a consultation"
+    class="w-full h-[550px] sm:h-[650px] lg:h-[750px] rounded-xl shadow-soft block"
+    style="background:#fff; border:0;"
+    frameborder="0"
+    allowfullscreen
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+  ></iframe>
+
+  <!-- Fallback (shown automatically if the iframe is blocked/not loaded) -->
+  <div id="booking-fallback" class="hidden absolute inset-0 flex items-center justify-center">
+    <a
+      href="https://calendar.app.google/cu3zQQ6BwicDoGA48"
+      target="_blank" rel="noopener"
+      class="inline-flex items-center justify-center rounded-full bg-[#0d3b34] text-white font-semibold px-6 py-3 shadow-soft hover:brightness-110"
+    >
+      Open Calendar to Book
+    </a>
+  </div>
+</div>
+
     </div>
   </section>
 
