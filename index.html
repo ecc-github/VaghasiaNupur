@@ -281,33 +281,50 @@
   <!-- ======================================================================= -->
   <!-- CONTACT SECTION                                                         -->
   <!-- ======================================================================= -->
-  <section id="contact" class="py-16 sm:py-20 lg:py-24 bg-[#d4b07a]">
-    <div class="mx-3 sm:mx-4 md:mx-auto md:w-[88%] lg:w-[80%] text-center">
-      <div class="text-left">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0d3b34] mb-4" style="font-family:'Playfair Display', serif;">Contact Me</h2>
-        <p class="text-[#0d3b34]/90 max-w-2xl">Interested in working together? Fill out some info and I’ll be in touch shortly. Prefer to book directly? <a href="#booking" class="underline hover:no-underline font-semibold" data-scroll>Click here</a>.</p>
-      </div>
-      <div class="mt-10 bg-[#fdf6e3] rounded-2xl shadow-soft p-6 sm:p-8 lg:p-10">
-        <form id="contact-form" method="POST" class="grid grid-cols-1 gap-6 text-left">
-          <input type="hidden" name="_subject" value="New message from your website">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <label class="block"><span class="block text-sm font-semibold text-[#0d3b34]">First Name <span class="opacity-70">(required)</span></span><input type="text" name="first_name" required class="mt-2 w-full rounded-xl border border-[#0d3b34]/30 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-2 focus:ring-[#0d3b34]/30 focus:border-[#0d3b34]" /></label>
-            <label class="block"><span class="block text-sm font-semibold text-[#0d3b34]">Last Name</span><input type="text" name="last_name" class="mt-2 w-full rounded-xl border border-[#0d3b34]/30 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-2 focus:ring-[#0d3b34]/30 focus:border-[#0d3b34]" /></label>
-          </div>
-          <label class="block"><span class="block text-sm font-semibold text-[#0d3b34]">Email <span class="opacity-70">(required)</span></span><input type="email" name="email" required class="mt-2 w-full rounded-xl border border-[#0d3b34]/30 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-2 focus:ring-[#0d3b34]/30 focus:border-[#0d3b34]" /></label>
-          <label class="block"><span class="block text-sm font-semibold text-[#0d3b34]">Message <span class="opacity-70">(required)</span></span><textarea name="message" rows="6" required class="mt-2 w-full rounded-xl border border-[#0d3b34]/30 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-2 focus:ring-[#0d3b34]/30 focus:border-[#0d3b34]"></textarea></label>
-          <div class="pt-2">
-            <button id="contact-submit" type="submit" class="inline-flex items-center justify-center rounded-full bg-[#B56A50] text-white font-medium tracking-wide px-6 py-3 shadow-soft hover:brightness-110 hover:-translate-y-0.5 transition">Send</button>
-            <p id="contact-success" class="hidden mt-3 text-sm font-semibold text-[#0d3b34]" role="status" aria-live="polite">Thanks! Your message has been sent.</p>
-            <p id="contact-error" class="hidden mt-3 text-sm font-semibold text-red-700" role="alert">Sorry, there was a problem sending your message. Please try again.</p>
-          </div>
-        </form>
-      </div>
+<section id="contact" class="pt-4 sm:pt-6 pb-16 sm:pb-20 bg-[#d4b07a]">
+  <div class="mx-3 sm:mx-4 md:mx-auto md:w-[88%] lg:w-[80%] text-center">
+    <div class="text-left mb-8">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0d3b34] mb-4" style="font-family:'Playfair Display', serif;">Contact Me</h2>
+      <p class="text-[#0d3b34]/90 max-w-2xl">Interested in working together? Fill out some info and I’ll be in touch shortly. Prefer to book directly? <a href="#booking" class="underline hover:no-underline font-semibold" data-scroll>Click here</a>.</p>
     </div>
-  </section>
+    
+    <div class="bg-[#fdf6e3] rounded-2xl shadow-soft p-6 sm:p-8 lg:p-10 text-left">
+      <form id="contact-form" method="POST" class="grid grid-cols-1 gap-6">
+        <input type="hidden" name="_subject" value="New message from your website">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <label class="block">
+            <span class="block text-sm font-semibold text-[#0d3b34] mb-1">First Name <span class="opacity-60 font-normal">(required)</span></span>
+            <input type="text" name="first_name" required class="w-full rounded-lg border border-[#0d3b34]/20 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-4 focus:ring-[#0d3b34]/10 focus:border-[#0d3b34] transition-all duration-200" />
+          </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-[#0d3b34] mb-1">Last Name</span>
+            <input type="text" name="last_name" class="w-full rounded-lg border border-[#0d3b34]/20 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-4 focus:ring-[#0d3b34]/10 focus:border-[#0d3b34] transition-all duration-200" />
+          </label>
+        </div>
+        
+        <label class="block">
+          <span class="block text-sm font-semibold text-[#0d3b34] mb-1">Email <span class="opacity-60 font-normal">(required)</span></span>
+          <input type="email" name="email" required class="w-full rounded-lg border border-[#0d3b34]/20 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-4 focus:ring-[#0d3b34]/10 focus:border-[#0d3b34] transition-all duration-200" />
+        </label>
+        
+        <label class="block">
+          <span class="block text-sm font-semibold text-[#0d3b34] mb-1">Message <span class="opacity-60 font-normal">(required)</span></span>
+          <textarea name="message" rows="5" required class="w-full rounded-lg border border-[#0d3b34]/20 bg-white px-4 py-3 text-[#0d3b34] focus:outline-none focus:ring-4 focus:ring-[#0d3b34]/10 focus:border-[#0d3b34] transition-all duration-200"></textarea>
+        </label>
+        
+        <div class="pt-2">
+          <button id="contact-submit" type="submit" class="inline-flex items-center justify-center rounded-full bg-[#B56A50] text-white font-medium tracking-wide px-8 py-3 shadow-soft hover:brightness-110 hover:-translate-y-0.5 transition-all">Send Message</button>
+          <p id="contact-success" class="hidden mt-3 text-sm font-semibold text-[#0d3b34]" role="status" aria-live="polite">Thanks! Your message has been sent.</p>
+          <p id="contact-error" class="hidden mt-3 text-sm font-semibold text-red-700" role="alert">Sorry, there was a problem sending your message. Please try again.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
 </main>
 
 <!-- ======================================================================= -->

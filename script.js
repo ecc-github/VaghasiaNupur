@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  
   // --- Overlay / Menu Logic ---
   var burger  = document.getElementById('burger');
   var overlay = document.getElementById('mobile-overlay');
@@ -20,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
   function openOverlay(){
     setHeaderVar();
     if(overlay) {
-      overlay.classList.remove('hidden'); 
-      void overlay.offsetWidth; 
+      overlay.classList.remove('hidden');
+      void overlay.offsetWidth;
       overlay.classList.add('is-open');
     }
     if(burger) burger.setAttribute('aria-expanded','true');
@@ -31,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function closeOverlay(){
     if(overlay) {
       overlay.classList.remove('is-open');
-      setTimeout(function(){ overlay.classList.add('hidden'); }, 300); 
+      setTimeout(function(){ overlay.classList.add('hidden'); }, 300);
     }
     if(burger) burger.setAttribute('aria-expanded','false');
     unlockScroll();
@@ -58,29 +57,77 @@ document.addEventListener('DOMContentLoaded', function () {
   var navLinks = document.querySelectorAll('.nav-link');
   var desktopIndicator = document.getElementById('desktop-indicator');
 
-  var observerOptions = {
-    root: null,
-    rootMargin: '-20% 0px -60% 0px', 
-    threshold: 0
-  };
+  // Suppresses the observer while scrolling to a clicked destination
+  var bookingClicked = false;
+  var scrollDebounceTimer = null;
 
+  function hideIndicator() {
+    navLinks.forEach(function(nav) { nav.classList.remove('is-active'); });
+    if (desktopIndicator) desktopIndicator.style.opacity = '0';
+  }
+
+  function moveIndicator(link) {
+    if (!desktopIndicator || !link.closest('#desktop-nav')) return;
+    var leftPos = link.offsetLeft;
+    var width = link.offsetWidth;
+    desktopIndicator.style.opacity = '1';
+    desktopIndicator.style.left = (leftPos + width * 0.15) + 'px';
+    desktopIndicator.style.width = (width * 0.70) + 'px';
+    desktopIndicator.style.top = (link.offsetTop - 4) + 'px';
+  }
+
+  // Unified Click Handler
+  document.querySelectorAll('a[data-scroll], a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      var href = this.getAttribute('href');
+
+      var isTopLink = (href === '#' || href === '#top' || href === '');
+
+      if (href === '#booking') {
+        bookingClicked = true;
+        hideIndicator();
+      } else if (isTopLink) {
+        // Logo/header click: reset lock, clear all highlights, debounce observer
+        bookingClicked = false;
+        hideIndicator();
+
+        clearTimeout(scrollDebounceTimer);
+        scrollDebounceTimer = setTimeout(function() {
+          scrollDebounceTimer = null;
+        }, 1000);
+      } else {
+        // Reset the booking lock so the indicator is allowed again
+        bookingClicked = false;
+
+        navLinks.forEach(function(nav) { nav.classList.remove('is-active'); });
+        this.classList.add('is-active');
+        moveIndicator(this);
+
+        // Suppress the observer for 1s while the page scrolls to destination,
+        // preventing intermediate sections from hijacking the highlight
+        clearTimeout(scrollDebounceTimer);
+        scrollDebounceTimer = setTimeout(function() {
+          scrollDebounceTimer = null;
+        }, 1000);
+      }
+    });
+  });
+
+  // Scroll Observer — blocked during booking state or active scroll debounce
+  var observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
   var observer = new IntersectionObserver(function(entries) {
+    if (bookingClicked) return;
+    // While a nav click is still scrolling to its target, don't let intermediate
+    // sections clobber the highlight the click already set
+    if (scrollDebounceTimer !== null) return;
+
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
         navLinks.forEach(function(link) {
           if (link.getAttribute('href') === '#' + entry.target.id) {
-            link.classList.add('is-active');
-            
-            // Move the desktop sliding indicator if it exists
-            if (desktopIndicator && link.closest('#desktop-nav')) {
-              desktopIndicator.style.opacity = '1';
-              // Center the bar over the text (70% width, inset by 15%)
-              var leftPos = link.offsetLeft;
-              var width = link.offsetWidth;
-              desktopIndicator.style.left = (leftPos + width * 0.15) + 'px';
-              desktopIndicator.style.width = (width * 0.70) + 'px';
-              // Position it slightly above the text
-              desktopIndicator.style.top = (link.offsetTop - 4) + 'px';
+            if (link.getAttribute('href') !== '#booking') {
+              link.classList.add('is-active');
+              moveIndicator(link);
             }
           } else {
             link.classList.remove('is-active');
@@ -90,11 +137,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }, observerOptions);
 
-  sections.forEach(function(section) {
-    observer.observe(section);
-  });
+  sections.forEach(function(section) { observer.observe(section); });
 
-  // Handle window resize so the indicator doesn't get misaligned
+  // Handle window resize
   window.addEventListener('resize', function() {
     var activeLink = document.querySelector('#desktop-nav .nav-link.is-active');
     if (activeLink && desktopIndicator) {
@@ -120,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
       successEl.classList.remove('hidden'); errorEl.classList.add('hidden');
       return;
     }
-    
+
     var hp = form.querySelector('input[name="_honey"]');
     if(hp && hp.value) return;
     if(!form.reportValidity()) return;
@@ -150,33 +195,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (form) form.addEventListener('submit', sendContact);
 
-// --- Lazy Load Booking Iframe ---
+  // --- Lazy Load Booking Iframe ---
   var bookingIframe = document.getElementById('booking-iframe');
   if (bookingIframe) {
-    var observer = new IntersectionObserver(function(entries, observer) {
+    var iframeObserver = new IntersectionObserver(function(entries, obs) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           bookingIframe.src = bookingIframe.dataset.src;
-          observer.unobserve(bookingIframe);
+          obs.unobserve(bookingIframe);
         }
       });
     }, { rootMargin: '200px' });
-    observer.observe(bookingIframe);
+    iframeObserver.observe(bookingIframe);
   }
 
-  // --- Unhighlight Menu on "Book a Session" Click ---
-  var bookLinks = document.querySelectorAll('a[href="#booking"]');
-  bookLinks.forEach(function(link) {
-    link.addEventListener('click', function() {
-      // Unhighlight all nav links
-      document.querySelectorAll('.nav-link').forEach(function(nav) {
-        nav.classList.remove('is-active');
-      });
-      // Hide the desktop indicator
-      if (desktopIndicator) {
-        desktopIndicator.style.opacity = '0';
-      }
-    });
-  });
-  
 });
